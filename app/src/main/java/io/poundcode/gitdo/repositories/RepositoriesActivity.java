@@ -1,12 +1,14 @@
-package io.poundcode.gitdo;
+package io.poundcode.gitdo.repositories;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +19,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
+import io.poundcode.gitdo.R;
+import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
 import io.poundcode.gitdo.test.TestData;
 
-public class MainActivity extends AppCompatActivity {
+public class RepositoriesActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -35,18 +40,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        if (fab != null)
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                }
-            });
-        RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         RepositoriesAdapter adapter = new RepositoriesAdapter();
         repositories.setLayoutManager(manager);
         repositories.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.fab)
+    public void onClickFab(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogLayout = View.inflate(this, R.layout.dialog_add_repository, null);
+        builder.setTitle(R.string.add_repository);
+        builder.setView(dialogLayout);
+        builder.setPositiveButton("Ok", null);
+        builder.setNegativeButton("Cancel", null);
+        builder.create().show();
     }
 
     @Override
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public RepositoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = View.inflate(parent.getContext(), R.layout.item_repo, null);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_repo, parent, false);
             return new RepositoryViewHolder(view);
         }
 
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class RepositoryViewHolder extends RecyclerView.ViewHolder {
+    public class RepositoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @Bind(R.id.tvRepoName)
         TextView tvRepoName;
@@ -110,6 +118,13 @@ public class MainActivity extends AppCompatActivity {
         public RepositoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(RepositoriesActivity.this, RepositoryDetailsActivity.class);
+            RepositoriesActivity.this.startActivity(intent);
         }
     }
 }

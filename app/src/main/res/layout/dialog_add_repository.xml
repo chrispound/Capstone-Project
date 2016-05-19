@@ -3,10 +3,11 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <EditText
-        android:id="@+id/search"
+        android:id="@+id/repoName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/material_margins"
@@ -15,11 +16,44 @@
         android:layout_marginStart="@dimen/material_margins"
         android:hint="@string/repository_name_or_author"/>
 
-    <android.support.v7.widget.RecyclerView
+    <EditText
+        android:id="@+id/author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/material_margins"
-        tools:listitem="@layout/item_repository_result"
-        />
+        android:layout_marginEnd="@dimen/material_margins"
+        android:layout_marginLeft="@dimen/material_margins"
+        android:layout_marginRight="@dimen/material_margins"
+        android:layout_marginStart="@dimen/material_margins"
+        android:hint="@string/username"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|right|bottom"
+            android:layout_marginBottom="@dimen/material_margins"
+            android:layout_marginEnd="@dimen/material_margins"
+            android:layout_marginRight="@dimen/material_margins"
+            android:background="@color/colorPrimary"
+            android:drawableLeft="@drawable/ic_search"
+            android:drawableStart="@drawable/ic_search"
+            android:textColor="@color/white"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Search"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:padding="@dimen/material_margins"
+            tools:listitem="@layout/item_repository_result"
+            />
+
+    </FrameLayout>
 
 </LinearLayout>

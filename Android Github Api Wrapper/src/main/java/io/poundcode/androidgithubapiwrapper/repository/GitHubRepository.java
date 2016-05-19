@@ -5,13 +5,13 @@ public class GitHubRepository {
     private String id;
     private String name;
     private String description;
-    private int openIssuesCount;
+    private int open_issues_count;
 
     public GitHubRepository(String id, String name, String description, int open_issues_count) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.openIssuesCount = open_issues_count;
+        this.open_issues_count = open_issues_count;
     }
 
     public String getId() {
@@ -39,11 +39,11 @@ public class GitHubRepository {
     }
 
     public int getOpenIssuesCount() {
-        return openIssuesCount;
+        return open_issues_count;
     }
 
     public void setOpenIssuesCount(int openIssuesCount) {
-        this.openIssuesCount = openIssuesCount;
+        this.open_issues_count = openIssuesCount;
     }
 
 }

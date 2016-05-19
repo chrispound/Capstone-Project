@@ -1,10 +1,11 @@
-package io.poundcode.gitdo.repositories;
+package io.poundcode.gitdo.repositorieslist;
 
 import android.content.Intent;
-import android.opengl.ETC1;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
 import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.gitdo.R;
+import io.poundcode.gitdo.data.repositories.RepositoryContract;
 import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
 import io.poundcode.gitdo.test.TestData;
 import retrofit2.Call;
@@ -47,6 +49,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     FloatingActionButton fab;
     private static final String TAG = "RepositoriesActivity";
     private RepositoriesAdapter mAdapter;
+    private Cursor adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class RepositoriesActivity extends AppCompatActivity {
         mAdapter = new RepositoriesAdapter();
         repositories.setLayoutManager(manager);
         repositories.setAdapter(mAdapter);
+        adapter = getContentResolver().query(RepositoryContract.BASE_URI,
+            null, null, null, null, null);
     }
 
     @OnClick(R.id.fab)
@@ -98,24 +103,24 @@ public class RepositoriesActivity extends AppCompatActivity {
             //load all user repos
             GitHubUserApi api = GitHubApiContext.retrofit.create(GitHubUserApi.class);
             Call<List<GitHubRepository>> call = api.getUserRepositories(user);
-//            mAdapter.setRepositoryList(TestData.getGitHubRepositoryTestData());
-            call.enqueue(new Callback<List<GitHubRepository>>() {
-                @Override
-                public void onResponse(Call<List<GitHubRepository>> call, Response<List<GitHubRepository>> response) {
-                    if(response.isSuccessful()) {
-                        Log.d(TAG, "onResponseSuccess: " + response.message());
-                        List<GitHubRepository> repositories = response.body();
-                        mAdapter.setRepositoryList(repositories);
-                    } else  {
-                        Log.e(TAG, "onResponseErr: "+ response.message() );
-                    }
-                }
+            mAdapter.setRepositoryList(TestData.getGitHubRepositoryTestData());
+//            call.enqueue(new Callback<List<GitHubRepository>>() {
+//                @Override
+//                public void onResponse(Call<List<GitHubRepository>> call, Response<List<GitHubRepository>> response) {
+//                    if(response.isSuccessful()) {
+//                        Log.d(TAG, "onResponseSuccess: " + response.message());
+//                        List<GitHubRepository> repositories = response.body();
+//                        mAdapter.setRepositoryList(repositories);
+//                    } else  {
+//                        Log.e(TAG, "onResponseErr: "+ response.message() );
+//                    }
+//                }
 
-                @Override
-                public void onFailure(Call<List<GitHubRepository>> call, Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
-                }
-            });
+//                @Override
+//                public void onFailure(Call<List<GitHubRepository>> call, Throwable t) {
+//                    Log.e(TAG, "onFailure: ", t);
+//                }
+//            });
         } else {
             //search by repo name
         }

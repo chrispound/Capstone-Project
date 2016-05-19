@@ -1,4 +1,4 @@
-package io.poundcode.gitdo.repositories;
+package io.poundcode.gitdo.repositorieslist;
 
 import android.app.Dialog;
 import android.content.Context;

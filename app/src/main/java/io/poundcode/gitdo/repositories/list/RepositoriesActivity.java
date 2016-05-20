@@ -130,20 +130,6 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         startService(AnalyticsIntentService.getScreenViewIntent(this, getScreenName()));
     }
 
-    private void executeRepositorySearch(String user, final String repo) {
-
-        if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(repo)) {
-            //load specific user repo
-        } else if (!TextUtils.isEmpty(user)) {
-            //load all user repos
-            GitHubUserApi api = GitHubApiContext.retrofit.create(GitHubUserApi.class);
-            Call<List<GitHubRepository>> call = api.getUserRepositories(user);
-            mAdapter.setRepositoryList(TestData.getGitHubRepositoryTestData());
-        } else {
-            //search by repo name
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

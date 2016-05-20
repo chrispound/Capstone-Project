@@ -11,13 +11,21 @@
         android:id="@+id/repoName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/repository_name_or_author"/>
+        android:hint="@string/repository_name_or_author"
+        android:maxLines="1"
+        android:inputType="text"
+        android:nextFocusDown="@+id/user"/>
 
     <EditText
         android:id="@+id/user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/username"/>
+        android:hint="@string/username"
+        android:imeActionLabel="@string/search"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:inputType="textNoSuggestions"
+        android:nextFocusDown="@+id/fab"/>
 
     <FrameLayout
         android:layout_width="match_parent"

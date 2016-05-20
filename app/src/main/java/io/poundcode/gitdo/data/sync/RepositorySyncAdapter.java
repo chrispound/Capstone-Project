@@ -73,20 +73,26 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
             context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
 
         // If the password doesn't exist, the account doesn't exist
-        if (null == accountManager.getPassword(newAccount)) {
+        if ( null == accountManager.getPassword(newAccount) ) {
 
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
          */
-            if (!accountManager.addAccountExplicitly(newAccount, "", null)) {
+            if (!accountManager.addAccountExplicitly(newAccount, null, null)) {
+                Log.e(TAG, "getSyncAccount: could not add account");
                 return null;
             }
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
             ContentResolver.setIsSyncable(newAccount, context.getString(R.string.content_authority), 1);
             onAccountCreated(newAccount, context);
         }
         return newAccount;
-
     }
 
     private static void onAccountCreated(Account newAccount, Context context) {

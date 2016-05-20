@@ -24,6 +24,6 @@ public interface GitHubRepositoryApi {
                                                 @Path("type") String type, @Path("id") String id);
 
     @GET("repos/{owner}/{repo}")
-    Call<List<GitHubRepository>> getUserRepositories(@Path("owner") String owner, @Path("repo") String path);
+    Call<GitHubRepository> getRepository(@Path("owner") String owner, @Path("repo") String repoName);
 
 }

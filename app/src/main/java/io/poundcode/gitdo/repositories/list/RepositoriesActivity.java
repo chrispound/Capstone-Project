@@ -1,5 +1,6 @@
 package io.poundcode.gitdo.repositories.list;
 
+import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,10 @@ import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
 import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.user.User;
+import io.poundcode.gitdo.GitDoApplication;
 import io.poundcode.gitdo.R;
+import io.poundcode.gitdo.data.analytics.AnalyticsIntentService;
+import io.poundcode.gitdo.data.analytics.TrackedScreenView;
 import io.poundcode.gitdo.data.repositories.RepositoryContract;
 import io.poundcode.gitdo.repositories.search.AddRepositoryActivity;
 import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
@@ -43,7 +50,7 @@ import io.poundcode.gitdo.utils.Extras;
 
 import retrofit2.Call;
 
-public class RepositoriesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RepositoriesActivity extends AppCompatActivity implements TrackedScreenView, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int SEARCH_CODE = 233;
     @Bind(R.id.toolbar)
@@ -60,6 +67,7 @@ public class RepositoriesActivity extends AppCompatActivity implements LoaderMan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fireAnalytics();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -90,6 +98,10 @@ public class RepositoriesActivity extends AppCompatActivity implements LoaderMan
     public void onClickFab(View view) {
         Intent intent = new Intent(this, AddRepositoryActivity.class);
         startActivityForResult(intent, SEARCH_CODE);
+    }
+
+    public void fireAnalytics() {
+        startService(AnalyticsIntentService.getScreenViewIntent(this, getScreenName()));
     }
 
     private void executeRepositorySearch(String user, final String repo) {
@@ -169,6 +181,11 @@ public class RepositoriesActivity extends AppCompatActivity implements LoaderMan
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return getString(R.string.repository_list_screen);
     }
 
     private class RepositoriesAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {

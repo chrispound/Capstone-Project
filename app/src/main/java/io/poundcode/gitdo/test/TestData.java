@@ -14,9 +14,9 @@ public class TestData {
     public static List<GitHubRepository> getGitHubRepositoryTestData() {
         List<GitHubRepository> data = new ArrayList<>();
         GitHubRepository fake = new GitHubRepository("1", "Main", "This is my main project1", 0);
-        GitHubRepository fake1 = new GitHubRepository("1", "Main", "This is my main project2", 0);
-        GitHubRepository fake2 = new GitHubRepository("1", "Main", "This is my main project3", 0);
-        GitHubRepository fake3 = new GitHubRepository("1", "Main", "This is my main project4", 0);
+        GitHubRepository fake1 = new GitHubRepository("1", "Main-1", "This is my main project2", 0);
+        GitHubRepository fake2 = new GitHubRepository("3", "Main3", "This is my main project3", 0);
+        GitHubRepository fake3 = new GitHubRepository("4", "Main4", "This is my main project4", 0);
         fake.setOwner(new User("owner1"));
         fake1.setOwner(new User("owner2"));
         fake2.setOwner(new User("owner3"));

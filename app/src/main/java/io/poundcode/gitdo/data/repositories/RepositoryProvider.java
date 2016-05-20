@@ -77,7 +77,10 @@ public class RepositoryProvider extends ContentProvider {
         final int match = uriMatcher.match(uri);
         switch (match) {
             case REPOSITORIES: {
-                final long _id = db.insertOrThrow(Tables.REPOSITORIES, null, contentValues);
+                final long _id = db.insertWithOnConflict(Tables.REPOSITORIES, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+                if(_id == -1) {
+                    Log.e(TAG, "insert: failed");
+                }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return RepositoryContract.buildItemUri(_id);
             }

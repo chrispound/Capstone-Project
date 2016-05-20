@@ -23,7 +23,8 @@ public class RepositoryDatabase extends SQLiteOpenHelper {
             + RepositoryContract.RepositoryColumns.DESCRIPTION + " TEXT,"
             + RepositoryContract.RepositoryColumns.NAME + TEXT_NOT_NULL
             + RepositoryContract.RepositoryColumns.PULL_REQUEST_COUNT + " TEXT,"
-            + RepositoryContract.RepositoryColumns.ISSUE_COUNT + " TEXT"
+            + RepositoryContract.RepositoryColumns.ISSUE_COUNT + " INTEGER,"
+            + RepositoryContract.RepositoryColumns.USER + " TEXT"
             + ")"
         );
     }

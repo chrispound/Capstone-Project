@@ -9,4 +9,6 @@
     <string name="cancel">Cancel</string>
     <string name="err_search_nothing_entered">Must enter at least one field.</string>
     <string name="search">Search</string>
+    <string name="no_data">No repositories! Try adding some.</string>
+    <string name="issue_count">"Issue Count: "</string>
 </resources>

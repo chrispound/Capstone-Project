@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import butterknife.OnClick;
 import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
 import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
+import io.poundcode.androidgithubapiwrapper.user.User;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.data.repositories.RepositoryContract;
 import io.poundcode.gitdo.repositories.search.AddRepositoryActivity;
@@ -130,16 +132,7 @@ public class RepositoriesActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -159,10 +152,12 @@ public class RepositoriesActivity extends AppCompatActivity implements LoaderMan
         List<GitHubRepository> repositoryList = new ArrayList<>(cursor.getCount());
         while (!cursor.isAfterLast()) {
             GitHubRepository repostiroy = new GitHubRepository();
-            repostiroy.setId(cursor.getString(1));
-            repostiroy.setName(cursor.getString(2));
-            repostiroy.setDescription(cursor.getString(3));
-            repostiroy.setId(cursor.getString(4));
+            repostiroy.setId(cursor.getString(RepositoryContract.COL_REPO_ID));
+            repostiroy.setName(cursor.getString(RepositoryContract.COL_NAME));
+            repostiroy.setDescription(cursor.getString(RepositoryContract.COL_DESCRIPTION));
+            repostiroy.setOpenIssuesCount(cursor.getInt(RepositoryContract.COL_ISSUE_COUNT));
+            User user = new User(cursor.getString(RepositoryContract.COL_USER));
+            repostiroy.setOwner(user);
             repositoryList.add(repostiroy);
             cursor.moveToNext();
         }

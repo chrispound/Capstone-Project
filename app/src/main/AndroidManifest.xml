@@ -3,7 +3,8 @@
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 
     <application
         android:allowBackup="true"
@@ -30,12 +31,26 @@
             android:label="@string/add_repository"
             android:theme="@style/AppTheme"/>
 
+        <activity android:name=".repositorydetails.comments.CommentsActivity"/>
+
+
+        <!--WIDGET-->
         <provider
             android:name=".data.repositories.RepositoryProvider"
             android:authorities="io.poundcode.gitdo.repositories"/>
+        <service
+            android:name=".widget.GitDoWidgetListService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <!--END WIDGET-->
 
-        <activity android:name=".repositorydetails.comments.CommentsActivity">
-        </activity>
+        <receiver android:name=".widget.GitDoWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gitdo_widget"/>
+        </receiver>
     </application>
 
 </manifest>

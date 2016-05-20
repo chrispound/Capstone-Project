@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".repositorieslist.RepositoriesActivity"
+            android:name=".repositories.list.RepositoriesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -25,10 +25,14 @@
             android:name=".repositorydetails.RepositoryDetailsActivity"
             android:label="@string/repository_details"
             android:theme="@style/AppTheme.NoActionBar"/>
-        
+
+        <activity android:name=".repositories.search.AddRepositoryActivity"
+                  android:label="@string/add_repository"
+                  android:theme="@style/AppTheme"/>
+
         <provider
-            android:authorities="io.poundcode.gitdo.repositories"
-            android:name=".data.repositories.RepositoryProvider"/>
+            android:name=".data.repositories.RepositoryProvider"
+            android:authorities="io.poundcode.gitdo.repositories"/>
     </application>
 
 </manifest>

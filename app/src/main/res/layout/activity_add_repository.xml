@@ -3,34 +3,27 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical">
+              android:minWidth="125dp"
+              android:orientation="vertical"
+              android:padding="@dimen/material_margins">
 
     <EditText
         android:id="@+id/repoName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/material_margins"
-        android:layout_marginLeft="@dimen/material_margins"
-        android:layout_marginRight="@dimen/material_margins"
-        android:layout_marginStart="@dimen/material_margins"
         android:hint="@string/repository_name_or_author"/>
 
     <EditText
-        android:id="@+id/author"
+        android:id="@+id/user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/material_margins"
-        android:layout_marginLeft="@dimen/material_margins"
-        android:layout_marginRight="@dimen/material_margins"
-        android:layout_marginStart="@dimen/material_margins"
         android:hint="@string/username"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,21 +32,18 @@
             android:layout_marginEnd="@dimen/material_margins"
             android:layout_marginRight="@dimen/material_margins"
             android:background="@color/colorPrimary"
-            android:drawableLeft="@drawable/ic_search"
-            android:drawableStart="@drawable/ic_search"
-            android:textColor="@color/white"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="Search"/>
+            android:src="@drawable/ic_search"
+            android:text="@string/search"/>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/results"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="50dp"
-            android:padding="@dimen/material_margins"
-            tools:listitem="@layout/item_repository_result"
+            tools:listitem="@layout/item_repository_search_result"
             />
 
     </FrameLayout>
+
 
 </LinearLayout>

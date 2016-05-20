@@ -1,11 +1,21 @@
 package io.poundcode.androidgithubapiwrapper.repository;
 
-public class GitHubRepository {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+import io.poundcode.androidgithubapiwrapper.user.Owner;
+
+public class GitHubRepository implements Serializable {
 
     private String id;
     private String name;
     private String description;
+    private Owner owner;
     private int open_issues_count;
+
+    public GitHubRepository() {
+    }
 
     public GitHubRepository(String id, String name, String description, int open_issues_count) {
         this.id = id;
@@ -46,4 +56,11 @@ public class GitHubRepository {
         this.open_issues_count = openIssuesCount;
     }
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
 }

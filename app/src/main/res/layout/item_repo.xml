@@ -40,7 +40,14 @@
                 android:gravity="center"
                 android:text="Description"
                 style="@style/TextAppearance.AppCompat.Subhead"
+                />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Author"
+                style="@style/TextAppearance.AppCompat.Subhead"
                 />
 
             <TextView

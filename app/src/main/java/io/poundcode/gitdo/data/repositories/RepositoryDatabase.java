@@ -19,8 +19,7 @@ public class RepositoryDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + RepositoryProvider.Tables.REPOSITORIES + " ("
-            + RepositoryContract.RepositoryColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + RepositoryContract.RepositoryColumns.REPO_ID + TEXT_NOT_NULL
+            + RepositoryContract.RepositoryColumns.REPO_ID + " TEXT NOT NULL PRIMARY KEY, "
             + RepositoryContract.RepositoryColumns.DESCRIPTION + " TEXT,"
             + RepositoryContract.RepositoryColumns.NAME + TEXT_NOT_NULL
             + RepositoryContract.RepositoryColumns.PULL_REQUEST_COUNT + " TEXT,"

@@ -1,12 +1,14 @@
-package io.poundcode.gitdo.repositorieslist;
+package io.poundcode.gitdo.repositories.list;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,19 +28,22 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
 import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.data.repositories.RepositoryContract;
+import io.poundcode.gitdo.repositories.search.AddRepositoryActivity;
 import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
 import io.poundcode.gitdo.test.TestData;
+import io.poundcode.gitdo.utils.Extras;
+
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class RepositoriesActivity extends AppCompatActivity {
+public class RepositoriesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int SEARCH_CODE = 233;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.repositories)
@@ -50,6 +53,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     private static final String TAG = "RepositoriesActivity";
     private RepositoriesAdapter mAdapter;
     private Cursor adapter;
+    private static final int LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,38 +65,29 @@ public class RepositoriesActivity extends AppCompatActivity {
         mAdapter = new RepositoriesAdapter();
         repositories.setLayoutManager(manager);
         repositories.setAdapter(mAdapter);
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         adapter = getContentResolver().query(RepositoryContract.BASE_URI,
             null, null, null, null, null);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            //repos were added reload data
+            ArrayList<GitHubRepository> repositoryList = (ArrayList<GitHubRepository>) data.getSerializableExtra(Extras.REPOSITORIES);
+            for (GitHubRepository repository : repositoryList) {
+                ContentValues value = RepositoryContract.getContentValueForRepository(repository);
+                getContentResolver().insert(RepositoryContract.BASE_URI, value);
+            }
+            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+        }
+    }
+
     @OnClick(R.id.fab)
     public void onClickFab(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        AlertDialog dialog = null;
-        final View dialogLayout = View.inflate(this, R.layout.dialog_add_repository, null);
-        final Button search = (Button) dialogLayout.findViewById(R.id.search);
-        final EditText userName = (EditText) dialogLayout.findViewById(R.id.author);
-        final EditText repoName = (EditText) dialogLayout.findViewById(R.id.repoName);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String user = userName.getText().toString();
-                String repo = repoName.getText().toString();
-                if (TextUtils.isEmpty(user) && TextUtils.isEmpty(repo)) {
-                    userName.setError("");
-                    repoName.setError("");
-                    Snackbar.make(search, R.string.err_search_nothing_entered, Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-                executeRepositorySearch(user, repo);
-            }
-        });
-        builder.setTitle(R.string.add_repository);
-        builder.setView(dialogLayout);
-        builder.setPositiveButton(getString(R.string.ok), null);
-        builder.setNegativeButton(getString(R.string.cancel), null);
-        dialog = builder.create();
-        dialog.show();
+        Intent intent = new Intent(this, AddRepositoryActivity.class);
+        startActivityForResult(intent, SEARCH_CODE);
     }
 
     private void executeRepositorySearch(String user, final String repo) {
@@ -146,6 +141,39 @@ public class RepositoriesActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri content = RepositoryContract.BASE_URI;
+        return new CursorLoader(this, content, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor == null) {
+            Log.e(TAG, "onLoadFinished: cursor was null");
+            return;
+        }
+        cursor.moveToFirst();
+        List<GitHubRepository> repositoryList = new ArrayList<>(cursor.getCount());
+        while (!cursor.isAfterLast()) {
+            GitHubRepository repostiroy = new GitHubRepository();
+            repostiroy.setId(cursor.getString(1));
+            repostiroy.setName(cursor.getString(2));
+            repostiroy.setDescription(cursor.getString(3));
+            repostiroy.setId(cursor.getString(4));
+            repositoryList.add(repostiroy);
+            cursor.moveToNext();
+        }
+
+        mAdapter.setRepositoryList(repositoryList);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     private class RepositoriesAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {

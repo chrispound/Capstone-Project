@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepositoryDetail;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.repositorydetails.comments.CommentsActivity;
+import io.poundcode.gitdo.utils.Extras;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,6 +23,11 @@ import butterknife.ButterKnife;
 public class RepositoryDetailAdapter extends RecyclerView.Adapter<RepositoryDetailAdapter.RepositoryDetailViewHolder> {
 
     List<GitHubRepositoryDetail> data;
+    private DetailItemClickListener mListener;
+
+    public RepositoryDetailAdapter(DetailItemClickListener mListener) {
+        this.mListener = mListener;
+    }
 
     @Override
     public RepositoryDetailAdapter.RepositoryDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,8 +71,11 @@ public class RepositoryDetailAdapter extends RecyclerView.Adapter<RepositoryDeta
         @Override
         public void onClick(View view) {
             // TODO: 5/20/2016 multipane support
-            Intent intent = new Intent(view.getContext(), CommentsActivity.class);
-            view.getContext().startActivity(intent);
+            mListener.onClickDetailItem(data.get(getAdapterPosition()));
         }
+    }
+
+    interface DetailItemClickListener {
+        void onClickDetailItem(GitHubRepositoryDetail repository);
     }
 }

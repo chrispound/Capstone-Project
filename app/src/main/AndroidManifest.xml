@@ -25,14 +25,17 @@
             android:name=".repositorydetails.RepositoryDetailsActivity"
             android:label="@string/repository_details"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".repositories.search.AddRepositoryActivity"
-                  android:label="@string/add_repository"
-                  android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".repositories.search.AddRepositoryActivity"
+            android:label="@string/add_repository"
+            android:theme="@style/AppTheme"/>
 
         <provider
             android:name=".data.repositories.RepositoryProvider"
             android:authorities="io.poundcode.gitdo.repositories"/>
+
+        <activity android:name=".repositorydetails.comments.CommentsActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -19,7 +19,7 @@ public interface GitHubRepositoryApi {
     Call<List<GitHubRepositoryDetail>> getRepoDetail(@Path("owner") String owner, @Path("repo") String repo,
                                                      @Path("type") String type);
 
-    @GET("repos/{owner}/{repo}/{type}/{id}")
+    @GET("repos/{owner}/{repo}/{type}/{id}/comments")
     Call<List<GitHubComment>> getDetailComments(@Path("owner") String owner, @Path("repo") String repo,
                                                 @Path("type") String type, @Path("id") String id);
 

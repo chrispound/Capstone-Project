@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
@@ -19,13 +20,13 @@ import io.poundcode.gitdo.utils.Extras;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-// TODO: 5/20/2016 add admob
 public class RepositoryDetailAdapter extends RecyclerView.Adapter<RepositoryDetailAdapter.RepositoryDetailViewHolder> {
 
     List<GitHubRepositoryDetail> data;
     private DetailItemClickListener mListener;
 
     public RepositoryDetailAdapter(DetailItemClickListener mListener) {
+        this.data = new ArrayList<>();
         this.mListener = mListener;
     }
 

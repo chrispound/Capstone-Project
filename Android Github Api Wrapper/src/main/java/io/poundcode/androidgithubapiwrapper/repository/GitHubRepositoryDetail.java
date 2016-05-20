@@ -1,9 +1,12 @@
 package io.poundcode.androidgithubapiwrapper.repository;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class GitHubRepositoryDetail implements Serializable {
 
+    @SerializedName("number")
     protected String id;
     protected String title;
     protected String repositoryId;

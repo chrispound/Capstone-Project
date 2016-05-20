@@ -1,5 +1,6 @@
 package io.poundcode.gitdo.repositorydetails;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import io.poundcode.androidgithubapiwrapper.api.repository.GitHubRepositoryApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepositoryDetail;
 import io.poundcode.gitdo.R;
+import io.poundcode.gitdo.repositorydetails.comments.CommentsActivity;
 import io.poundcode.gitdo.utils.Extras;
 
 import butterknife.Bind;
@@ -25,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements RepositoryDetailAdapter.DetailItemClickListener {
 
 
     @Bind(R.id.rvData)
@@ -64,7 +66,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new RepositoryDetailAdapter();
+        mAdapter = new RepositoryDetailAdapter(this);
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 2);
         rvData.setAdapter(mAdapter);
         rvData.setLayoutManager(manager);
@@ -95,5 +97,14 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onClickDetailItem(GitHubRepositoryDetail repoDetail) {
+        Intent intent = new Intent(getActivity(), CommentsActivity.class);
+        intent.putExtra(Extras.REPOSITORY, mRepository);
+        intent.putExtra(Extras.REPOSITORY_DETAIL, repoDetail);
+        intent.putExtra(Extras.DETAIL_TYPE, mType);
+        startActivity(intent);
     }
 }

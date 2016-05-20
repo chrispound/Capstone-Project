@@ -9,16 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
+import io.poundcode.androidgithubapiwrapper.comment.GitHubComment;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.test.TestData;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CommentsFragment extends Fragment {
+public class CommentsFragment extends Fragment implements CommentView {
 
     @Bind(R.id.rvComments)
     RecyclerView rvComments;
+    private CommentsAdapter mAdapter;
 
     @Nullable
     @Override
@@ -31,17 +35,21 @@ public class CommentsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        CommentsAdapter rvAdapter = new CommentsAdapter();
+        mAdapter = new CommentsAdapter();
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getActivity());
-        rvComments.setAdapter(rvAdapter);
+        rvComments.setAdapter(mAdapter);
         rvComments.setLayoutManager(manager);
-        // TODO: 5/20/2016 fetch data
-        rvAdapter.setComments(TestData.getGitHubCommentList());
+//        mAdapter.setComments(TestData.getGitHubCommentList());
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void updateAndDisplayComments(List<GitHubComment> commentList) {
+        mAdapter.setComments(commentList);
     }
 }

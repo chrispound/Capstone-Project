@@ -41,6 +41,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public void setComments(List<GitHubComment> comments) {
+        if(comments == null) {
+            return;
+        }
         this.comments = comments;
         notifyDataSetChanged();
     }

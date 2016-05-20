@@ -67,6 +67,7 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
     private static final String TAG = "RepositoriesActivity";
     private RepositoriesAdapter mAdapter;
     private static final int LOADER_ID = 1;
+    private List<GitHubRepository> mRepositoryList = new ArrayList<>();
     private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
         @Override
@@ -183,8 +184,7 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         return getString(R.string.repository_list_screen);
     }
 
-    private class RepositoriesAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {
-        List<GitHubRepository> repositoryList = new ArrayList<>();
+    public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {
 
         @Override
         public RepositoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -194,24 +194,25 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
 
         @Override
         public void onBindViewHolder(RepositoryViewHolder holder, int position) {
-            GitHubRepository repository = repositoryList.get(position);
+            GitHubRepository repository = mRepositoryList.get(position);
             holder.tvRepoName.setText(repository.getName());
             if (TextUtils.isEmpty(repository.getDescription())) {
                 holder.tvRepoDescription.setVisibility(View.GONE);
             }
             holder.tvRepoDescription.setText(repository.getDescription());
             // TODO: 5/18/2016 replace with R.string
-            holder.tvOpenIssues.setText("Open Issues:" + String.valueOf(repository.getOpenIssuesCount()));
+            holder.tvOpenIssues.setText(getString(R.string.issue_count) + String.valueOf(repository.getOpenIssuesCount()));
+            holder.tvUser.setText(getString(R.string.user) + " " + repository.getOwner().getLogin());
         }
 
         @Override
         public int getItemCount() {
             // TODO: 5/17/2016 replace with real data
-            return repositoryList.size();
+            return mRepositoryList.size();
         }
 
         public void setRepositoryList(List<GitHubRepository> repositoryList) {
-            this.repositoryList = repositoryList;
+            mRepositoryList = repositoryList;
             notifyDataSetChanged();
         }
     }
@@ -226,6 +227,8 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         TextView tvOpenPullRequests;
         @Bind(R.id.tvOpenIssues)
         TextView tvOpenIssues;
+        @Bind(R.id.user)
+        TextView tvUser;
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
@@ -235,8 +238,8 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(RepositoriesActivity.this, RepositoryDetailsActivity.class);
-            RepositoriesActivity.this.startActivity(intent);
+            RepositoryDetailsActivity.startRepositoryDetailsActivityIntent(
+                RepositoriesActivity.this, mRepositoryList.get(getAdapterPosition()));
         }
     }
 }

@@ -41,15 +41,13 @@ public class RepositoryDetailsActivity extends AppCompatActivity implements Trac
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mRepository = (GitHubRepository) getIntent().getSerializableExtra(Extras.REPOSITORY);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        mRepository = (GitHubRepository) getIntent().getSerializableExtra(Extras.REPOSITORY);
         fireAnalytics();
     }
 

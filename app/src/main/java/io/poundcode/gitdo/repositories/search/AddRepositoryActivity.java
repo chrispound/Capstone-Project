@@ -36,10 +36,12 @@ import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.search.GitHubSearchRepositoryResult;
 import io.poundcode.gitdo.R;
+import io.poundcode.gitdo.data.analytics.AnalyticsIntentService;
+import io.poundcode.gitdo.data.analytics.TrackedScreenView;
 import io.poundcode.gitdo.utils.Extras;
 import io.poundcode.gitdo.utils.Utils;
 
-public class AddRepositoryActivity extends AppCompatActivity implements SearchRecyclerViewComponents.MarkRepoToAddListener {
+public class AddRepositoryActivity extends AppCompatActivity implements TrackedScreenView, SearchRecyclerViewComponents.MarkRepoToAddListener {
 
     @Bind(R.id.repoName)
     EditText etRepoName;
@@ -94,6 +96,7 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
             }
         });
         requestNewInterstitial();
+        fireAnalytics();
     }
 
     @OnClick(R.id.search)
@@ -195,5 +198,16 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
         } else {
             btnSearch.setImageResource(R.drawable.ic_search);
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return "Add Repository";
+    }
+
+    @Override
+    public void fireAnalytics() {
+        Intent intent = AnalyticsIntentService.getScreenViewIntent(this, getScreenName());
+        startService(intent);
     }
 }

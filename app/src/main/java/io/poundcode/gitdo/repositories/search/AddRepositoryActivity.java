@@ -13,6 +13,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +42,7 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
     RecyclerView rvResults;
     private SearchRecyclerViewComponents mAdapter;
     Map<String, GitHubRepository> repositoriesToAdd = new HashMap<>();
+    InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -50,6 +55,16 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         rvResults.setLayoutManager(manager);
         rvResults.setAdapter(mAdapter);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                finish();
+            }
+        });
+        requestNewInterstitial();
     }
 
     @OnClick(R.id.search)
@@ -59,7 +74,11 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
             Intent intent = new Intent();
             intent.putExtra(Extras.REPOSITORIES, repositories);
             setResult(RESULT_OK, intent);
-            finish();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            } else {
+                finish();
+            }
             return;
         }
         String user = etUser.getText().toString();
@@ -72,6 +91,13 @@ public class AddRepositoryActivity extends AppCompatActivity implements SearchRe
         }
         // TODO: 5/19/2016 make network request
         mAdapter.setRepositories(TestData.getGitHubRepositoryTestData());
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+            .build();
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override

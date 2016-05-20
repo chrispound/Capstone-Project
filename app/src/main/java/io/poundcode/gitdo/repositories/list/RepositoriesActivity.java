@@ -1,8 +1,11 @@
 package io.poundcode.gitdo.repositories.list;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,11 +41,13 @@ import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
 import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.user.User;
+import io.poundcode.gitdo.Constants;
 import io.poundcode.gitdo.GitDoApplication;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.data.analytics.AnalyticsIntentService;
 import io.poundcode.gitdo.data.analytics.TrackedScreenView;
 import io.poundcode.gitdo.data.repositories.RepositoryContract;
+import io.poundcode.gitdo.data.sync.RepositorySyncAdapter;
 import io.poundcode.gitdo.repositories.search.AddRepositoryActivity;
 import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
 import io.poundcode.gitdo.test.TestData;
@@ -61,8 +66,15 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
     FloatingActionButton fab;
     private static final String TAG = "RepositoriesActivity";
     private RepositoriesAdapter mAdapter;
-    private Cursor adapter;
     private static final int LOADER_ID = 1;
+    private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //notify fragments to update
+            getSupportLoaderManager().restartLoader(LOADER_ID, null, RepositoriesActivity.this);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +88,22 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         repositories.setLayoutManager(manager);
         repositories.setAdapter(mAdapter);
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-        adapter = getContentResolver().query(RepositoryContract.BASE_URI,
-            null, null, null, null, null);
+        RepositorySyncAdapter.initializeSyncAdapter(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(syncFinishedReceiver, new IntentFilter(Constants.SYNC_FINISHED));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(syncFinishedReceiver != null) {
+            unregisterReceiver(syncFinishedReceiver);
+        }
     }
 
     @Override

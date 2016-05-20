@@ -13,4 +13,6 @@
     <string name="issue_count">"Issue Count: "</string>
     <string name="repository_list_screen">Repository List</string>
     <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="sync_account_type" translatable="false">io.poundcode.gitdo.repositories</string>
+    <string name="content_authority" translatable="false">io.poundcode.gitdo.repositories</string>
 </resources>

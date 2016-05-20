@@ -2,6 +2,7 @@
 <manifest package="io.poundcode.gitdo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
@@ -40,7 +41,9 @@
         <!--WIDGET-->
         <provider
             android:name=".data.repositories.RepositoryProvider"
-            android:authorities="io.poundcode.gitdo.repositories"/>
+            android:authorities="io.poundcode.gitdo.repositories"
+            android:exported="false"
+            android:syncable="true"/>
         <service
             android:name=".widget.GitDoWidgetListService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
@@ -54,8 +57,36 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/gitdo_widget"/>
         </receiver>
-        <service android:name=".data.analytics.AnalyticsIntentService"
+
+        <service
+            android:name=".data.analytics.AnalyticsIntentService"
             android:exported="false"/>
+
+        <service
+            android:name=".data.sync.RepositorySyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"/>
+        </service>
+
+        <account-authenticator
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:accountType="@string/sync_account_type"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"/>
+
+        <service android:name=".data.sync.RepositorySyncAuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator"/>
+        </service>
     </application>
 
 </manifest>

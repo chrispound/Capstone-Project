@@ -1,5 +1,7 @@
 package io.poundcode.androidgithubapiwrapper.comment;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 import io.poundcode.androidgithubapiwrapper.user.GitHubUser;
@@ -8,15 +10,16 @@ public class GitHubComment implements Serializable {
 
     private String id;
     private String body;
-    private GitHubUser gitHubUser;
+    @SerializedName("user")
+    private GitHubUser user;
 
     public GitHubComment() {
     }
 
-    public GitHubComment(String id, String body, GitHubUser gitHubUser) {
+    public GitHubComment(String id, String body, GitHubUser user) {
         this.id = id;
         this.body = body;
-        this.gitHubUser = gitHubUser;
+        this.user = user;
     }
 
     public String getId() {
@@ -36,10 +39,10 @@ public class GitHubComment implements Serializable {
     }
 
     public GitHubUser getGitHubUser() {
-        return gitHubUser;
+        return user;
     }
 
     public void setGitHubUser(GitHubUser gitHubUser) {
-        this.gitHubUser = gitHubUser;
+        this.user = gitHubUser;
     }
 }

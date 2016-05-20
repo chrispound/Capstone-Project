@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         holder.user.setText(comment.getGitHubUser().getLogin());
         holder.body.setText(comment.getBody());
 
-        // TODO: 5/20/2016  Picasso to load avatar
+        Picasso.with(holder.itemView.getContext())
+            .load(comment.getGitHubUser().getAvatarUrl())
+            .placeholder(R.drawable.ic_account_placeholder)
+            .into(holder.avatar);
     }
 
     @Override
@@ -41,7 +46,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public void setComments(List<GitHubComment> comments) {
-        if(comments == null) {
+        if (comments == null) {
             return;
         }
         this.comments = comments;

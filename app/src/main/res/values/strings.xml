@@ -20,4 +20,5 @@
     <string name="content_authority" translatable="false">io.poundcode.gitdo.repositories</string>
     <string name="err_search">Could not complete search. Please try again.</string>
     <string name="user">User:</string>
+    <string name="avatar">Avatar</string>
 </resources>

@@ -139,23 +139,6 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
             GitHubUserApi api = GitHubApiContext.retrofit.create(GitHubUserApi.class);
             Call<List<GitHubRepository>> call = api.getUserRepositories(user);
             mAdapter.setRepositoryList(TestData.getGitHubRepositoryTestData());
-//            call.enqueue(new Callback<List<GitHubRepository>>() {
-//                @Override
-//                public void onResponse(Call<List<GitHubRepository>> call, Response<List<GitHubRepository>> response) {
-//                    if(response.isSuccessful()) {
-//                        Log.d(TAG, "onResponseSuccess: " + response.message());
-//                        List<GitHubRepository> repositories = response.body();
-//                        mAdapter.setRepositoryList(repositories);
-//                    } else  {
-//                        Log.e(TAG, "onResponseErr: "+ response.message() );
-//                    }
-//                }
-
-//                @Override
-//                public void onFailure(Call<List<GitHubRepository>> call, Throwable t) {
-//                    Log.e(TAG, "onFailure: ", t);
-//                }
-//            });
         } else {
             //search by repo name
         }

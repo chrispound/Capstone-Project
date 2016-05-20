@@ -2,21 +2,21 @@ package io.poundcode.androidgithubapiwrapper.comment;
 
 import java.io.Serializable;
 
-import io.poundcode.androidgithubapiwrapper.user.User;
+import io.poundcode.androidgithubapiwrapper.user.GitHubUser;
 
 public class GitHubComment implements Serializable {
 
     private String id;
     private String body;
-    private User user;
+    private GitHubUser gitHubUser;
 
     public GitHubComment() {
     }
 
-    public GitHubComment(String id, String body, User user) {
+    public GitHubComment(String id, String body, GitHubUser gitHubUser) {
         this.id = id;
         this.body = body;
-        this.user = user;
+        this.gitHubUser = gitHubUser;
     }
 
     public String getId() {
@@ -35,11 +35,11 @@ public class GitHubComment implements Serializable {
         this.body = body;
     }
 
-    public User getUser() {
-        return user;
+    public GitHubUser getGitHubUser() {
+        return gitHubUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGitHubUser(GitHubUser gitHubUser) {
+        this.gitHubUser = gitHubUser;
     }
 }

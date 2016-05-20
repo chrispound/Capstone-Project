@@ -1,6 +1,5 @@
 package io.poundcode.gitdo.repositories.list;
 
-import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,10 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +32,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import io.poundcode.androidgithubapiwrapper.GitHubApiContext;
-import io.poundcode.androidgithubapiwrapper.api.user.GitHubUserApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
-import io.poundcode.androidgithubapiwrapper.user.User;
+import io.poundcode.androidgithubapiwrapper.user.GitHubUser;
 import io.poundcode.gitdo.Constants;
-import io.poundcode.gitdo.GitDoApplication;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.data.analytics.AnalyticsIntentService;
 import io.poundcode.gitdo.data.analytics.TrackedScreenView;
@@ -50,10 +42,7 @@ import io.poundcode.gitdo.data.repositories.RepositoryContract;
 import io.poundcode.gitdo.data.sync.RepositorySyncAdapter;
 import io.poundcode.gitdo.repositories.search.AddRepositoryActivity;
 import io.poundcode.gitdo.repositorydetails.RepositoryDetailsActivity;
-import io.poundcode.gitdo.test.TestData;
 import io.poundcode.gitdo.utils.Extras;
-
-import retrofit2.Call;
 
 public class RepositoriesActivity extends AppCompatActivity implements TrackedScreenView, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -164,8 +153,8 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
             repostiroy.setName(cursor.getString(RepositoryContract.COL_NAME));
             repostiroy.setDescription(cursor.getString(RepositoryContract.COL_DESCRIPTION));
             repostiroy.setOpenIssuesCount(cursor.getInt(RepositoryContract.COL_ISSUE_COUNT));
-            User user = new User(cursor.getString(RepositoryContract.COL_USER));
-            repostiroy.setOwner(user);
+            GitHubUser gitHubUser = new GitHubUser(cursor.getString(RepositoryContract.COL_USER));
+            repostiroy.setOwner(gitHubUser);
             repositoryList.add(repostiroy);
             cursor.moveToNext();
         }

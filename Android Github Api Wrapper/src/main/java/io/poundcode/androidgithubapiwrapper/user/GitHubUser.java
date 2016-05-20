@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class GitHubUser implements Serializable {
     String login;
     @SerializedName("avatar_url")
     String avatarUrl;
 
-    public User(){}
+    public GitHubUser(){}
 
-    public User(String login) {
+    public GitHubUser(String login) {
         this.login = login;
     }
 

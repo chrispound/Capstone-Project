@@ -29,7 +29,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     @Override
     public void onBindViewHolder(CommentsViewHolder holder, int position) {
         GitHubComment comment = comments.get(position);
-        holder.user.setText(comment.getUser().getLogin());
+        holder.user.setText(comment.getGitHubUser().getLogin());
         holder.body.setText(comment.getBody());
 
         // TODO: 5/20/2016  Picasso to load avatar

@@ -7,7 +7,7 @@ import io.poundcode.androidgithubapiwrapper.comment.GitHubComment;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubIssue;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepositoryDetail;
-import io.poundcode.androidgithubapiwrapper.user.User;
+import io.poundcode.androidgithubapiwrapper.user.GitHubUser;
 
 public class TestData {
 
@@ -17,10 +17,10 @@ public class TestData {
         GitHubRepository fake1 = new GitHubRepository("1", "Main-1", "This is my main project2", 4);
         GitHubRepository fake2 = new GitHubRepository("3", "Main3", "This is my main project3", 5);
         GitHubRepository fake3 = new GitHubRepository("4", "Main4", "This is my main project4", 8);
-        fake.setOwner(new User("owner1"));
-        fake1.setOwner(new User("owner2"));
-        fake2.setOwner(new User("owner3"));
-        fake3.setOwner(new User("owner4"));
+        fake.setOwner(new GitHubUser("owner1"));
+        fake1.setOwner(new GitHubUser("owner2"));
+        fake2.setOwner(new GitHubUser("owner3"));
+        fake3.setOwner(new GitHubUser("owner4"));
         data.add(fake);
         data.add(fake1);
         data.add(fake2);
@@ -41,7 +41,7 @@ public class TestData {
 
     public static List<GitHubComment> getGitHubCommentList() {
         List<GitHubComment> comments = new ArrayList<>();
-        GitHubComment comment = new GitHubComment("1","Comments", new User("Sirchip"));
+        GitHubComment comment = new GitHubComment("1","Comments", new GitHubUser("Sirchip"));
         comments.add(comment);
         return comments;
     }

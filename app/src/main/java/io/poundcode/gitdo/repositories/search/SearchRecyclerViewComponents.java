@@ -15,12 +15,14 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.gitdo.R;
 
 public class SearchRecyclerViewComponents extends RecyclerView.Adapter<SearchRecyclerViewComponents.SearchViewHolder> {
 
     List<GitHubRepository> repositories = new ArrayList<>();
+    Map<String, GitHubRepository> repositoriesToAdd = new HashMap<>();
     MarkRepoToAddListener listener;
 
     public SearchRecyclerViewComponents(MarkRepoToAddListener listener) {
@@ -31,7 +33,7 @@ public class SearchRecyclerViewComponents extends RecyclerView.Adapter<SearchRec
     public SearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View searchView = LayoutInflater.from(parent.getContext())
             .inflate(R.layout.item_repository_search_result, parent, false);
-        return new SearchViewHolder(searchView, listener );
+        return new SearchViewHolder(searchView, listener);
     }
 
     @Override
@@ -39,6 +41,11 @@ public class SearchRecyclerViewComponents extends RecyclerView.Adapter<SearchRec
         GitHubRepository repository = repositories.get(position);
         holder.repoName.setText(repository.getName());
         holder.user.setText(repository.getOwner().getLogin());
+        if (repositoriesToAdd.containsKey(repository.getId())) {
+            holder.add.setChecked(true);
+        } else {
+            holder.add.setChecked(false);
+        }
     }
 
     @Override
@@ -70,14 +77,22 @@ public class SearchRecyclerViewComponents extends RecyclerView.Adapter<SearchRec
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            mListener.repositoryCheckChange(repositories.get(getAdapterPosition()), b);
+        public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+            GitHubRepository repository = repositories.get(getAdapterPosition());
+            mListener.repositoryCheckChange(repository, checked);
+            if (checked) {
+                repositoriesToAdd.put(repository.getId(), repository);
+            } else {
+                if (repositoriesToAdd.containsKey(repository.getId())) {
+                    repositoriesToAdd.remove(repository.getId());
+                }
+            }
         }
 
     }
 
     interface MarkRepoToAddListener {
-        void repositoryCheckChange(GitHubRepository repository,  boolean checked);
+        void repositoryCheckChange(GitHubRepository repository, boolean checked);
     }
 
 }

@@ -50,6 +50,9 @@ public class RepositoryDetailAdapter extends RecyclerView.Adapter<RepositoryDeta
     }
 
     public void setData(List<GitHubRepositoryDetail> data) {
+        if(data == null) {
+            return;
+        }
         this.data = data;
         notifyDataSetChanged();
     }

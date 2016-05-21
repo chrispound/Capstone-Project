@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -15,6 +16,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +29,14 @@ import io.poundcode.androidgithubapiwrapper.api.repository.GitHubRepositoryApi;
 import io.poundcode.androidgithubapiwrapper.repository.GitHubRepository;
 import io.poundcode.androidgithubapiwrapper.user.GitHubUser;
 import io.poundcode.gitdo.BuildConfig;
+import io.poundcode.gitdo.Constants;
 import io.poundcode.gitdo.R;
 import io.poundcode.gitdo.data.repositories.RepositoryContract;
+import io.poundcode.gitdo.data.repositories.RepositoryProvider;
 import io.poundcode.gitdo.test.TestData;
 import io.poundcode.gitdo.utils.Utils;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +47,8 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "RepositorySyncAdapter";
     private static final long SYNC_INTERVAL = 60 * 60;
     private static final long SYNC_FLEXTIME = SYNC_INTERVAL / 3;
+    private static final String ACCOUNT_TYPE = "io.poundcode.gitdo";
+    private static final String ACCOUNT = "GitDo";
     private final ContentResolver mContentResolver;
 
     public RepositorySyncAdapter(Context context, boolean autoInitialize) {
@@ -50,18 +58,24 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
+        Log.d(TAG, "onPerformSync: called");
         if (Utils.isNetworkConnected(getContext())) {
             fetchData();
         }
     }
 
     public static void initializeSyncAdapter(Context context) {
-        getSyncAccount(context);
+        Log.d(TAG, "initializeSyncAdapter: ");
+        configurePeriodicSync(context, SYNC_INTERVAL);
+        syncImmediately(context);
     }
 
     public static void configurePeriodicSync(Context context, long syncInterval) {
+        Log.d(TAG, "configurePeriodicSync: ");
         Account account = getSyncAccount(context);
-        String authority = context.getString(R.string.content_authority);
+        String authority = ACCOUNT_TYPE;
+        ContentResolver.setIsSyncable(account, authority, 1);
+        ContentResolver.setSyncAutomatically(account, authority, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
@@ -77,57 +91,19 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private static Account getSyncAccount(Context context) {
-        // Get an instance of the Android account manager
-        AccountManager accountManager =
-            (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        Log.d(TAG, "getSyncAccount: Start");
+        AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
 
         // Create the account type and default account
-        Account newAccount = new Account(
-            context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
+        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
 
         if (newAccount == null) {
             Log.e(TAG, "getSyncAccount: account was null");
             return null;
         }
 
-        // If the password doesn't exist, the account doesn't exist
-        if (null == accountManager.getPassword(newAccount)) {
-
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
-            if (!accountManager.addAccountExplicitly(newAccount, null, null)) {
-                Log.e(TAG, "getSyncAccount: could not add account");
-                return null;
-            }
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
-            ContentResolver.setIsSyncable(newAccount, context.getString(R.string.content_authority), 1);
-            onAccountCreated(newAccount, context);
-        }
+        accountManager.addAccountExplicitly(newAccount, null, null);
         return newAccount;
-    }
-
-    private static void onAccountCreated(Account newAccount, Context context) {
-        /*
-         * Since we've created an account
-         */
-        configurePeriodicSync(context, SYNC_INTERVAL);
-
-        /*
-         * Without calling setSyncAutomatically, our periodic sync will not be enabled.
-         */
-        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
-
-        /*
-         * Finally, let's do a sync to get things started
-         */
-        syncImmediately(context);
     }
 
     public static void syncImmediately(Context context) {
@@ -140,7 +116,6 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void fetchData() {
-        // TODO: 5/20/2016 fetch data
         Log.d(TAG, "fetchData: ");
         //get current repos.
         Uri content = RepositoryContract.BASE_URI;
@@ -199,15 +174,29 @@ public class RepositorySyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "saveAndUpdateUi: null list");
             repositoryList = new ArrayList<>();
         }
+        try {
 
-        Vector<ContentValues> values = new Vector<>(repositoryList.size());
-        for (GitHubRepository repository : repositoryList) {
-            ContentValues contentValues = RepositoryContract.getContentValueForRepository(repository);
-            values.add(contentValues);
+
+            Vector<ContentValues> values = new Vector<>(repositoryList.size());
+            for (GitHubRepository repository : repositoryList) {
+                ContentValues contentValues = RepositoryContract.getContentValueForRepository(repository);
+                values.add(contentValues);
+            }
+            ContentValues[] dataToInsert = new ContentValues[values.size()];
+            values.toArray(dataToInsert);
+            int inserted = getContext().getContentResolver().bulkInsert(RepositoryContract.BASE_URI, dataToInsert);
+
+            //send notification
+            //notify widget
+            Intent i = new Intent(getContext(), RepositoryProvider.class);
+            i.setAction(Constants.SYNC_FINISHED);
+            getContext().sendBroadcast(i);
+            Intent activity = new Intent(Constants.SYNC_FINISHED);
+            getContext().sendBroadcast(activity);
+            Log.d(TAG, "saveAndUpdateUi: " + inserted);
+        } catch (Exception e) {
+            Log.e(TAG, "saveAndUpdateUi: ", e);
+            Crashlytics.logException(e);
         }
-        ContentValues[] dataToInsert = new ContentValues[values.size()];
-        values.toArray(dataToInsert);
-        int inserted = getContext().getContentResolver().bulkInsert(RepositoryContract.BASE_URI, dataToInsert);
-        Log.d(TAG, "saveAndUpdateUi: " + inserted);
     }
 }

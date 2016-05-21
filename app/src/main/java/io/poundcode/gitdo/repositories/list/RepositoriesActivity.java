@@ -62,6 +62,7 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         @Override
         public void onReceive(Context context, Intent intent) {
             //notify fragments to update
+            Log.d(TAG, "onReceive: sync triggered");
             getSupportLoaderManager().restartLoader(LOADER_ID, null, RepositoriesActivity.this);
         }
     };
@@ -79,7 +80,7 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
         repositories.setAdapter(mAdapter);
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         RepositorySyncAdapter.initializeSyncAdapter(this);
-
+//        RepositorySyncAdapter.syncImmediately(this);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class RepositoriesActivity extends AppCompatActivity implements TrackedSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(syncFinishedReceiver != null) {
+        if (syncFinishedReceiver != null) {
             unregisterReceiver(syncFinishedReceiver);
         }
     }

@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-
     <application
         android:name=".GitDoApplication"
         android:allowBackup="true"
@@ -16,6 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".repositories.list.RepositoriesActivity"
             android:label="@string/app_name"
@@ -75,7 +75,7 @@
 
         <account-authenticator
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:accountType="@string/sync_account_type"
+            android:accountType="io.poundcode.gitdo"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"/>
 
@@ -87,6 +87,13 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator"/>
         </service>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ca4870aa77ad18c35bf83ae8ac2bdf0815d14f7b"
+            />
+
     </application>
+
 
 </manifest>

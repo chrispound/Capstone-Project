@@ -1,10 +1,20 @@
 package io.poundcode.gitdo;
 
 import android.app.Application;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import io.fabric.sdk.android.Fabric;
+
 public class GitDoApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Fabric.with(this, new Crashlytics());
+    }
 
     private Tracker mTracker;
 

@@ -1,37 +1,43 @@
 {
   "project_info": {
-    "project_number": "27081486442",
-    "project_id": "gitdo-4d397"
+    "project_number": "976797564563",
+    "firebase_url": "https://gitdo-47dd3.firebaseio.com",
+    "project_id": "gitdo-47dd3",
+    "storage_bucket": "gitdo-47dd3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:27081486442:android:cd28534280ba2d63",
+        "mobilesdk_app_id": "1:976797564563:android:cd28534280ba2d63",
         "android_client_info": {
           "package_name": "io.poundcode.gitdo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "976797564563-a64mt7pi58lcdin24bplkl1faddj5cn4.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "976797564563-1a4a3eoajq0sjk5nbu45ibqc440sn667.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZReqZcVZ54BOIjwWlSExb5fJCPG6utT4"
+          "current_key": "AIzaSyBH93mcHsiyibVE6FqCQsfRAxiik3i2ZJk"
         }
       ],
       "services": {
         "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-77984571-1"
-          }
+          "status": 1
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 2,
-          "test_banner_ad_unit_id": "ca-app-pub-3940256099942544/6300978111",
-          "test_interstitial_ad_unit_id": "ca-app-pub-3940256099942544/1033173712"
+          "status": 2
         }
       }
     }

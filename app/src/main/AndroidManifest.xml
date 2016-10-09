@@ -15,7 +15,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".repositories.list.RepositoriesActivity"
             android:label="@string/app_name"
@@ -34,25 +33,25 @@
             android:name=".repositories.search.AddRepositoryActivity"
             android:label="@string/add_repository"
             android:theme="@style/AppTheme"/>
-
         <activity android:name=".repositorydetails.comments.CommentsActivity"/>
 
-
-        <!--WIDGET-->
+        <!-- WIDGET -->
         <provider
             android:name=".data.repositories.RepositoryProvider"
             android:authorities="io.poundcode.gitdo.repositories"
             android:exported="false"
             android:syncable="true"/>
+
         <service
             android:name=".widget.GitDoWidgetListService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
-        <!--END WIDGET-->
+        <!-- END WIDGET -->
 
         <receiver android:name=".widget.GitDoWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/gitdo_widget"/>
@@ -61,13 +60,13 @@
         <service
             android:name=".data.analytics.AnalyticsIntentService"
             android:exported="false"/>
-
         <service
             android:name=".data.sync.RepositorySyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter"/>
@@ -83,6 +82,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator"/>
@@ -94,6 +94,5 @@
             />
 
     </application>
-
 
 </manifest>

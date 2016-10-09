@@ -13,6 +13,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -66,6 +67,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':Android Github Api Wrapper')
 
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
@@ -77,26 +79,28 @@ dependencies {
     compile "com.android.support:design:$rootProject.ext.supportVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.supportVersion"
     compile "com.android.support:cardview-v7:$rootProject.ext.supportVersion"
-
-
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 
     //PLAY SERVICES
-    compile 'com.google.android.gms:play-services-ads:9.0.0'
-    compile 'com.google.android.gms:play-services-analytics:9.0.0'
+    compile "com.google.android.gms:play-services-ads:$rootProject.ext.playServiceVersion"
+    compile "com.google.android.gms:play-services-analytics:$rootProject.ext.playServiceVersion"
 
     //Firebase
-    compile"com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
-    compile "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
+    compile"com.google.firebase:firebase-core:$rootProject.ext.playServiceVersion"
+    compile "com.google.firebase:firebase-auth:$rootProject.ext.playServiceVersion"
 
     //TESTING
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    compile 'com.android.support.test:runner:0.5'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile ('com.android.support.test.espresso:espresso-core:2.2.2') {
+        exclude module: 'support-annotations'
+    }
+    testCompile ('com.android.support.test:runner:0.5') {
+        exclude module:'support-annotations'
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.10'
+    gradleVersion = '2.14.1'
 }
 
 // ADD THIS AT THE BOTTOM
